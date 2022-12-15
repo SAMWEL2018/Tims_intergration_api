@@ -3,11 +3,9 @@ package com.tims.intergration.repository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
-import org.springframework.data.jpa.repository.support.QueryHints;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Map;
 
 @Repository
 public class ReceiptRepository {
