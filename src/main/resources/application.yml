@@ -1,0 +1,13 @@
+server:
+  port: ${APP_TIMS_PORT:5000}
+
+spring:
+  datasource:
+    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+    url: jdbc:sqlserver://${TIMS_DB_HOST:localhost}:${TIMS_DB_PORT:1435};databaseName=${TIMS_DB_NAME:fotrn};encrypt=true;trustServerCertificate=true;
+    username: ${TIMS_DB_USERNAME:sa}
+    password: ${TIMS_DB_PASSOWRD:test@2022}
+
+tims:
+  base_url: ${TIMS_BASE_URL:http://197.248.125.81:8086/api/v3/}
+  invoice_url: ${TIMS_INVOICE_URL:invoices}
