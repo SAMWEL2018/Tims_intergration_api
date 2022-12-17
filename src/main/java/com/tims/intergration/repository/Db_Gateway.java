@@ -17,7 +17,14 @@ public class Db_Gateway {
     ReceiptRepository repository;
 
     public TimsInvoice getInvoicesForProcessing(){
-        repository.getUnprocessedReceipts();
+        repository
+                .getUnprocessedReceipts()
+                .forEach(e->{
+                    repository.getReceiptItemS(Integer.parseInt(e.get("RctNo").toString()))
+                            .forEach(System.out::println);//print items
+                });
+        // All items Are getting printed
+
         return TimsInvoice.builder()
                 .buyer(null)
                 .cashier("wafula")

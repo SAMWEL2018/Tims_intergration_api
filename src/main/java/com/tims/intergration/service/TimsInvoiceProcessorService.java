@@ -22,9 +22,9 @@ public class TimsInvoiceProcessorService {
 
         try {
             TimsInvoice invoice = db_gateway.getInvoicesForProcessing();
-            log.info("Invoice :: "+new ObjectMapper().writeValueAsString(invoice));
+            //log.info("Invoice :: "+new ObjectMapper().writeValueAsString(invoice));
 
-            http.pushInvoice(invoice);
+            //http.pushInvoice(invoice);
 
         } catch (Exception e) {
             throw new RuntimeException(e);
