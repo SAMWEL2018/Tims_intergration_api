@@ -18,8 +18,9 @@ public class ReceiptRepository {
     }
 
     public List<Map<String, Object>> getReceiptItemS(int receiptNo){
-        String sql = "SELECT RctNo, RctEntryNo, TrnDate, ItemCode, Qty, Unit, SPPreVat, VatAmt, VatCode, CPPreVat, SupCode, \n" +
-                "Location, SalesmanCode, CustCode, CRC FROM RctTrn WHERE RctNo =? ";
+        String sql = "SELECT rt.RctNo, rt.Qty, rt.Unit, rt.VatCode, rt.SPPreVat, rt.CPPreVat, rt.ItemCode, i.ItemCode, i.Name, i.VATCode, i.Packing, i.Unit, i.SP1InclVAT, i.CPInclVatTopUnit " +
+                "FROM FOTRN.dbo.RctTrn rt, FOBASE.dbo.Items i  WHERE rt.ItemCode = i.ItemCode AND  rt.RctNo =? " +
+                "ORDER by rt.RctNo  ";
         List<Map<String, Object>> results = jdbcTemplate.queryForList(sql, receiptNo);
 
         if (results.size() >0){
@@ -58,6 +59,16 @@ public class ReceiptRepository {
                 .stream()
                 .anyMatch(e -> (Double.parseDouble(e.get("dr").toString()) - Double.parseDouble(e.get("cr").toString())) >= 0);
 
+    }
+
+    private double getLegerTotal(int rctNo){
+        String sql = "SELECT SUM(Dr) AS dr, SUM(Cr) AS cr FROM TrnLedger WHERE DocNoA =35 AND Details in ('Receipt Total') ";
+        List<Map<String, Object>> results = jdbcTemplate.queryForList(sql, rctNo);
+
+        if (results.size() > 0){
+            return 0;
+        }
+        return Double.parseDouble(results.get(0).get("cr").toString());
     }
 
 
