@@ -8,6 +8,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @Slf4j
 public class TimsInvoiceProcessorService {
@@ -18,16 +20,22 @@ public class TimsInvoiceProcessorService {
     public HttpComponent http;
 
 
-    public void processInvoice(){
+    public void processInvoice() {
 
         try {
-            TimsInvoice invoice = db_gateway.getInvoicesForProcessing();
-            //log.info("Invoice :: "+new ObjectMapper().writeValueAsString(invoice));
-
-            //http.pushInvoice(invoice);
+            List<TimsInvoice> invoices = db_gateway.getInvoicesForProcessing();
+            log.info("Invoice :: " + new ObjectMapper().writeValueAsString(invoices));
+            invoices.forEach(invoice -> {
+                try {
+                    new Thread(() -> http.pushInvoice(invoice)).start();
+                } catch (Exception e) {
+                    log.error("Invoice Failed : "+e.getMessage());
+                    //e.printStackTrace();
+                }
+            });
 
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
     }
 }

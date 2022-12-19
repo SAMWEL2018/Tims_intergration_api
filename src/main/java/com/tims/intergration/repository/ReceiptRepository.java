@@ -17,7 +17,7 @@ public class ReceiptRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public List<Map<String, Object>> getReceiptItemS(int receiptNo){
+    public List<Map<String, Object>> getReceiptItems(int receiptNo){
         String sql = "SELECT rt.RctNo, rt.Qty, rt.Unit, rt.VatCode, rt.SPPreVat, rt.CPPreVat, rt.ItemCode, i.ItemCode, i.Name, i.VATCode, i.Packing, i.Unit, i.SP1InclVAT, i.CPInclVatTopUnit " +
                 "FROM FOTRN.dbo.RctTrn rt, FOBASE.dbo.Items i  WHERE rt.ItemCode = i.ItemCode AND  rt.RctNo =? " +
                 "ORDER by rt.RctNo  ";
@@ -36,11 +36,14 @@ public class ReceiptRepository {
 
         List<Map<String, Object>> results = jdbcTemplate.queryForList(sql, "NEW");
 
+
         if (results.size() > 0) {
-            return results
+            List<Map<String, Object>> r = results
                     .stream()
                     .filter(this::isReceiptPaid) // Remove Receipt not paid
                     .toList();
+            System.out.println("==============> "+ r.size());
+            return r;
         }
         return new ArrayList<>();
     }
@@ -55,20 +58,22 @@ public class ReceiptRepository {
             return false;
         }
         //Compare Dr - CR if greater or equal to 0
+
         return results
                 .stream()
                 .anyMatch(e -> (Double.parseDouble(e.get("dr").toString()) - Double.parseDouble(e.get("cr").toString())) >= 0);
 
     }
 
-    private double getLegerTotal(int rctNo){
-        String sql = "SELECT SUM(Dr) AS dr, SUM(Cr) AS cr FROM TrnLedger WHERE DocNoA =35 AND Details in ('Receipt Total') ";
+    public Map<String, Object> getLegerInfo(int rctNo){
+        String sql = "SELECT SUM(Dr) AS dr, SUM(Cr) AS cr, TrnType,TrnNo,DocNoA FROM TrnLedger WHERE DocNoA =? AND " +
+                " Details in  ('Receipt Total') GROUP BY TrnType,TrnNo,DocNoA  ";
         List<Map<String, Object>> results = jdbcTemplate.queryForList(sql, rctNo);
 
         if (results.size() > 0){
-            return 0;
+            return results.get(0);
         }
-        return Double.parseDouble(results.get(0).get("cr").toString());
+        return null;
     }
 
 
