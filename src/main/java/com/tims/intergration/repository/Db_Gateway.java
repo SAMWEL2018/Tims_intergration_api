@@ -1,6 +1,9 @@
 package com.tims.intergration.repository;
 
-import com.tims.intergration.model.*;
+import com.tims.intergration.model.Item;
+import com.tims.intergration.model.Line;
+import com.tims.intergration.model.Payment;
+import com.tims.intergration.model.TimsInvoice;
 import com.tims.intergration.utility.PaymentType;
 import com.tims.intergration.utility.TransactionType;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +17,14 @@ public class Db_Gateway {
     ReceiptRepository repository;
 
     public TimsInvoice getInvoicesForProcessing(){
-        repository.getUnprocessedReceipts();
+        repository
+                .getUnprocessedReceipts()
+                .forEach(e->{
+                    repository.getReceiptItemS(Integer.parseInt(e.get("RctNo").toString()))
+                            .forEach(System.out::println);//print items
+                });
+        // All items Are getting printed
+
         return TimsInvoice.builder()
                 .buyer(null)
                 .cashier("wafula")
