@@ -18,8 +18,8 @@ public class ReceiptRepository {
     }
 
     public List<Map<String, Object>> getReceiptItems(int receiptNo){
-        String sql = "SELECT rt.RctNo, rt.Qty, rt.Unit, rt.VatCode, rt.SPPreVat, rt.CPPreVat, rt.ItemCode, i.ItemCode, i.Name, i.VATCode, i.Packing, i.Unit, i.SP1InclVAT, i.CPInclVatTopUnit " +
-                "FROM FOTRN.dbo.RctTrn rt, FOBASE.dbo.Items i  WHERE rt.ItemCode = i.ItemCode AND  rt.RctNo =? " +
+        String sql = "SELECT rt.RctNo, rt.Qty, rt.Unit, rt.VatCode, (rt.SPPreVat + rt.VatAmt) as SPPreVat , rt.CPPreVat, rt.ItemCode, i.ItemCode, i.Name, i.VATCode, i.Packing, i.Unit, i.SP1InclVAT, i.CPInclVatTopUnit " +
+                "FROM FOTRN.dbo.RctTrn rt, FOBASE.dbo.Items i  WHERE rt.ItemCode COLLATE DATABASE_DEFAULT = i.ItemCode COLLATE DATABASE_DEFAULT AND  rt.RctNo =? " +
                 "ORDER by rt.RctNo  ";
         List<Map<String, Object>> results = jdbcTemplate.queryForList(sql, receiptNo);
 
@@ -32,7 +32,7 @@ public class ReceiptRepository {
     public List<Map<String, Object>> getUnprocessedReceipts() {
 
         String sql = " SELECT RctNo, TrnDate, UserName, PreVatAmt, VatAmt, Loyalty, CustName, SalesManCode, CRC, CUInvNo, " +
-                "RIN, CUQR, CUDeviceSrNo, ESDSign FROM RctTrnSummary where tims_status =? ";
+                "CUQR, CUDeviceSrNo, CuDateTimeR, CuStatusMessage FROM RctTrnSummary where tims_status =? ";
 
         List<Map<String, Object>> results = jdbcTemplate.queryForList(sql, "NEW");
 
@@ -54,6 +54,7 @@ public class ReceiptRepository {
 
         List<Map<String, Object>> results = jdbcTemplate.queryForList(sql, receipt.get("RctNo"));
         //If not found in leger return false
+        // change lookup
         if (results.size() <= 0) {
             return false;
         }
