@@ -36,7 +36,7 @@ public class TimsInvoiceProcessorService {
                         String msg = node.has("messages") ? node.get("messages").asText() : "Failed";
                         if (msg.toLowerCase().contains("success")) {
                             String date = node.has("DateTime") ? node.get("DateTime").asText() : "Not Found";
-                            String invoiceNumber = node.has("invoiceNumber") ? node.get("invoiceNumber").asText() : "Not Found";
+                            String invoiceNumber = node.has("mtn") ? node.get("mtn").asText() : "Not Found";
                             String msn = node.has("msn") ? node.get("msn").asText() : "Not Found";
                             String relevantNumber = node.has("relevantNumber") ? node.get("relevantNumber").asText() : "Not Found";
                             String totalAmount = node.has("totalAmount") ? node.get("totalAmount").asText() : "Not Found";
