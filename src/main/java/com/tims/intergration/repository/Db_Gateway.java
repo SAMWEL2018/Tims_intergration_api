@@ -6,6 +6,7 @@ import com.tims.intergration.model.Payment;
 import com.tims.intergration.model.TimsInvoice;
 import com.tims.intergration.utility.PaymentType;
 import com.tims.intergration.utility.TransactionType;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -14,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 @Component
+@Slf4j
 public class Db_Gateway {
     @Autowired
     ReceiptRepository repository;
@@ -93,6 +95,16 @@ public class Db_Gateway {
                 mode = PaymentType.TRANSFER.get();
         }
         return mode;
+    }
+
+
+    public void updateRctSummary(String rctNo, String status, String msg, String date, String inV, String msn, String rntNo, String tA, String tI, String verUrl){
+        try {
+            repository.updateRct(rctNo, status, msg, date, inV, msn, rntNo, tA, tI, verUrl);
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.error("ERROR Updating the Rct Summary => "+e.getMessage());
+        }
     }
 
 }
