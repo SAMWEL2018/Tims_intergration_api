@@ -22,12 +22,14 @@ public class Db_Gateway {
         List<TimsInvoice> timsInvoices = new ArrayList<>();
         repository
                 .getUnprocessedReceipts()
-                .forEach(rct -> timsInvoices.add(buildInvoice(rct)));
+                .forEach(rct -> {
+                    TimsInvoice t = buildInvoice(rct);
+                    if (t.getItems().size() > 0) {
+                        timsInvoices.add(t);
+                    }
+                });
 
-        return timsInvoices
-                .stream()
-                .filter(e->e.getItems().size() > 0)
-                .toList();
+        return timsInvoices;
     }
 
     private TimsInvoice buildInvoice(Map<String, Object> receipt) {
@@ -89,7 +91,6 @@ public class Db_Gateway {
                 break;
             default:
                 mode = PaymentType.TRANSFER.get();
-
         }
         return mode;
     }
