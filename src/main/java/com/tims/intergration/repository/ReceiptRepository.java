@@ -38,8 +38,8 @@ public class ReceiptRepository {
 
     public List<Map<String, Object>> getUnprocessedReceipts() {
 
-        String sql = " SELECT RctNo, TrnDate, UserName, PreVatAmt, VatAmt, Loyalty, CustName, SalesManCode, CRC, CUInvNo, " +
-                "CUQR, CUDeviceSrNo, CuDateTimeR, CuStatusMessage FROM RctTrnSummary where tims_status =? ";
+        String sql = " SELECT RctNo, TrnDate, UserName, PreVatAmt, VatAmt, Loyalty, CustName, SalesManCode, CRC " +
+                " FROM RctTrnSummary where tims_status =? ";
 
         List<Map<String, Object>> results = jdbcTemplate.queryForList(sql, "NEW");
 
