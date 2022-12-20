@@ -29,6 +29,13 @@ public class ReceiptRepository {
         return new ArrayList<>();
     }
 
+    public int updateRct(String rctNo, String status, String msg, String date, String inV, String msn, String rntNo, String tA, String tI, String verUrl){
+        String sql = "UPDATE FOTRN.dbo.RctTrnSummary " +
+                "SET  CUInvNo=?,  CUQR=?, CUDeviceSrNo=?, ESDSign=?, tims_status=? " +
+                "WHERE RctNo=? ";
+        return jdbcTemplate.update(sql, inV, verUrl,msn, rntNo, status, rctNo);
+    }
+
     public List<Map<String, Object>> getUnprocessedReceipts() {
 
         String sql = " SELECT RctNo, TrnDate, UserName, PreVatAmt, VatAmt, Loyalty, CustName, SalesManCode, CRC, CUInvNo, " +
