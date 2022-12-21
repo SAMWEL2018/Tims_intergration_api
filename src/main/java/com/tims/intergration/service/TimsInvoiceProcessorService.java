@@ -53,7 +53,7 @@ public class TimsInvoiceProcessorService {
                                 String verificationUrl = node.has("verificationUrl") ? node.get("verificationUrl").asText() : "Not Found";
                                 db_gateway.updateRctSummary(invoice.getTraderSystemInvoiceNumber(), "SUC", msg, date, invoiceNumber, msn, relevantNumber, totalAmount, totalItems, verificationUrl);
                             } else if (msg.contains("timed out")) {
-                                //Do nothing to allow reprocessing
+                                log.warn("Timeout when posting : "+invoice.getTraderSystemInvoiceNumber());
                             } else
                                 db_gateway.updateRctSummary(invoice.getTraderSystemInvoiceNumber(), "FAILED", node.toString().replaceAll("\'", ""), LocalDateTime.now().toString(), "", "", "", "", "", "");
 
