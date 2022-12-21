@@ -3,14 +3,12 @@ package com.tims.intergration.http;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.tims.intergration.config.AppConfig;
 import com.tims.intergration.model.TimsInvoice;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 @Component
@@ -41,7 +39,7 @@ public class HttpComponent {
             return res.getBody();
 
         } catch (Exception e) {
-            log.error("Error On Posting Invoice to TIMS: "+ e.getMessage());
+            log.error("Error On Posting Invoice to TIMS Invoice: "+ invoice.getTraderSystemInvoiceNumber()+" => "+ e.getMessage());
             return new ObjectMapper().readTree("{\"messages\":\""+e.getMessage()+"\"}");
         }
 
