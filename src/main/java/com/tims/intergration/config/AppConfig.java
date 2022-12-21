@@ -1,7 +1,9 @@
 package com.tims.intergration.config;
 
+import com.tims.intergration.utility.InvoiceCache;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -16,6 +18,11 @@ public class AppConfig {
 
     public String getInvoicePostEndpoint(){
         return timsBaseUrl+invoices;
+    }
+
+    @Bean
+    public InvoiceCache getTransactionCache(){
+        return new InvoiceCache();
     }
 
 }

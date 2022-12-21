@@ -11,3 +11,17 @@ spring:
 tims:
   base_url: ${TIMS_BASE_URL:http://197.248.125.81:8086/api/v3/}
   invoice_url: ${TIMS_INVOICE_URL:invoices}
+
+#logging----------------------------------------------------------
+logging:
+  pattern: '%d{yyyy-MM-dd HH:mm:ss.SSS} | %-20.20thread | %5p | %-25.25logger{25}: %m%n'
+  level:
+    root: INFO
+    org:
+      sla: DEBUG
+  file:
+    name: ${LOG_PATH:/home/TIMS_LOGS/}${LOGFILE:today.log}
+  logback:
+    rollingpolicy:
+      file-name-pattern: ${LOG_PATH:/home/TIMS_LOGS/}%d{ddMMyyyy}.%i.log
+      max-history: 500

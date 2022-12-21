@@ -12,7 +12,7 @@ public class SchedulerService {
     @Autowired
     private TimsInvoiceProcessorService timsInvoiceProcessorService;
 
-    @Scheduled(fixedDelay = 20000)
+    @Scheduled(fixedDelay = 1000)
     public void invokeInvoiceProcesing(){
         timsInvoiceProcessorService.processInvoice();
     }
