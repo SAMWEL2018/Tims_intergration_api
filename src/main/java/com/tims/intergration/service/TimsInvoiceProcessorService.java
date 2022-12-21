@@ -46,7 +46,7 @@ public class TimsInvoiceProcessorService {
                         } else if (msg.contains("timed out")) {
                             //Do nothing to allow reprocessing
                         } else
-                            db_gateway.updateRctSummary(invoice.getTraderSystemInvoiceNumber(), "FAILED", node.asText().replaceAll("\'", ""), LocalDateTime.now().toString(), "", "", "", "", "", "");
+                            db_gateway.updateRctSummary(invoice.getTraderSystemInvoiceNumber(), "FAILED", node.toString().replaceAll("\'", ""), LocalDateTime.now().toString(), "", "", "", "", "", "");
                     } catch (JsonProcessingException e) {
                         e.printStackTrace();
                     }
