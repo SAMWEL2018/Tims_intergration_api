@@ -1,0 +1,21 @@
+version: "3.2"
+services:
+  tims:
+    image: sam9883/tims:intergration-1.0.0
+    restart: unless-stopped
+    ports:
+      - "2000:2000"
+    environment:
+      - APP_TIMS_PORT=2000
+      - TIMS_DB_HOST=192.168.100.43
+      - TIMS_DB_PORT=1435
+      - TIMS_DB_NAME=fotrn
+      - TIMS_DB_USERNAME=sa
+      - TIMS_DB_PASSOWRD=test@2022
+      - TIMS_BASE_URL=http://197.248.125.81:8086/api/v3/
+      - TIMS_INVOICE_URL=invoices
+      - LOG_PATH=/home/TIMS_LOGS/
+      - LOGFILE=today.log
+      - TZ=Africa/Nairobi
+    volumes:
+          - /home/TIMS_LOGS/:/home/TIMS_LOGS/
