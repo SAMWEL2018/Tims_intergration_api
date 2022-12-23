@@ -31,7 +31,7 @@ public class ReceiptRepository {
 
     public int updateRct(String rctNo, String status, String msg, String date, String inV, String msn, String rntNo, String tA, String tI, String verUrl){
         String sql = "UPDATE FOTRN.dbo.RctTrnSummary " +
-                "SET  tims_status=?, CUInvNo=?, CUQR=?, CUDeviceSrNo=?, CuDateTimeR=?, CuStatusMessage=? " +
+                "SET  tims_status=?, CUInvNo=?, CUQR=?, CUDeviceSrNo=?, CuDateTimeR=?, CuStatusMessage=?, CuCountRequests = CuCountRequests + 1 " +
                 "WHERE RctNo=? ";
         return jdbcTemplate.update(sql,status,inV,verUrl,msn,date,msg,rctNo);
     }
