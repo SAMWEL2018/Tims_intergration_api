@@ -14,6 +14,15 @@ public class SchedulerService {
 
     @Scheduled(fixedDelay = 1000)
     public void invokeInvoiceProcesing(){
-        timsInvoiceProcessorService.processInvoice();
+        timsInvoiceProcessorService.normalInvoiceProcessing();
+    }
+
+    @Scheduled(fixedDelay = 10000)
+    public void retryProcessing(){
+        timsInvoiceProcessorService.retryInvoiceProcessing();
+    }
+
+    public void CountRequests(){
+
     }
 }

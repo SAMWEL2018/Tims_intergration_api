@@ -35,13 +35,21 @@ public class ReceiptRepository {
                 "WHERE RctNo=? ";
         return jdbcTemplate.update(sql,status,inV,verUrl,msn,date,msg,rctNo);
     }
+    public  int updateCounter(String rctNo,int CuCountRequests){
+        String sql = "UPDATE FOTRN.dbo.RctTrnSummary " +
+                "SET CuCountRequests=?" + "WHERE RctNo=?";
+
+        return jdbcTemplate.update(sql,rctNo,CuCountRequests);
+    }
 
     public List<Map<String, Object>> getUnprocessedReceipts() {
 
         String sql = " SELECT RctNo, TrnDate, UserName, PreVatAmt, VatAmt, Loyalty, CustName, SalesManCode, CRC " +
-                " FROM RctTrnSummary where tims_status =? ";
+                " FROM RctTrnSummary where tims_status =? and CuCountRequests<?";
 
-        List<Map<String, Object>> results = jdbcTemplate.queryForList(sql, "NEW");
+        int count = 5;
+
+        List<Map<String, Object>> results = jdbcTemplate.queryForList(sql, "NEW",count);
 
 
         if (results.size() > 0) {
@@ -83,6 +91,25 @@ public class ReceiptRepository {
         }
         return null;
     }
+
+    public  List<Map<String,Object>>  getReceptsForRetry(){
+        String sql = " SELECT RctNo, TrnDate, UserName, PreVatAmt, VatAmt, Loyalty, CustName, SalesManCode, CRC " +
+                " FROM RctTrnSummary where tims_status =? and CuCountRequests =? ";
+        int count = 5 ;
+        List<Map<String,Object>> results = jdbcTemplate.queryForList(sql,"NEW",count);
+
+        if (results.size()>0){
+            List<Map<String,Object>> res = results
+                    .stream()
+                    .filter(this::isReceiptPaid)
+                    .toList();
+            System.out.println("The timed out receipts are >>>>>>>> "+res.size());
+            return res;
+        }
+        return new ArrayList<>();
+    }
+
+
 
 
 }
