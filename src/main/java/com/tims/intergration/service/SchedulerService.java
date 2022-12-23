@@ -26,7 +26,7 @@ public class SchedulerService {
     public void invokeInvoiceProcesing() {
 
         if (isActivated) {
-            timsInvoiceProcessorService.processInvoice();
+            timsInvoiceProcessorService.normalInvoiceProcessing();
         } else {
             log.warn("""
                 \n
@@ -40,7 +40,17 @@ public class SchedulerService {
     }
 
     @Scheduled(fixedDelay = 5000)
-    public void  hammerSchedule(){
+    public void  hammerSchedule() {
         isActivated = timsInvoiceProcessorService.hammerService();
+    }
+
+
+    @Scheduled(fixedDelay = 10000)
+    public void retryProcessing(){
+        timsInvoiceProcessorService.retryInvoiceProcessing();
+    }
+
+    public void CountRequests(){
+
     }
 }

@@ -1,0 +1,24 @@
+: ${PORT:=2000}
+: ${VERSION:=intergration-1.0.0}
+: ${NAME:=tims}
+: ${REGISTRY:=sam9883}
+
+TAG=tims:$VERSION
+
+docker stop $NAME
+docker rm $NAME
+docker run -d -p $PORT:$PORT \
+-e APP_TIMS_PORT=$PORT \
+-e TIMS_DB_HOST=db \
+-e TIMS_DB_PORT=1435 \
+-e TIMS_DB_NAME=fotrn \
+-e TIMS_DB_USERNAME=sa \
+-e TIMS_DB_PASSOWRD=test@2022 \
+-e TIMS_BASE_URL=http://197.248.125.81:8086/api/v3/ \
+-e TIMS_INVOICE_URL=invoices \
+-e LOG_PATH=/home/TIMS_LOGS/ \
+-e LOGFILE=today.log \
+-e TZ=Africa/Nairobi \
+--add-host db:192.168.100.43 \
+-v /home/TIMS_LOGS/:/home/TIMS_LOGS/ --name $NAME $REGISTRY/$TAG
+docker logs -f $NAME

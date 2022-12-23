@@ -36,49 +36,76 @@ public class TimsInvoiceProcessorService {
     private InvoiceCache cache;
 
 
-    public void processInvoice() {
+    int count =0;
 
+    public void performCount(){
+        for (int i=count; i<=5;i++){
+
+        }
+    }
+
+
+    public void normalInvoiceProcessing() {
         try {
             List<TimsInvoice> invoices = db_gateway.getInvoicesForProcessing();
             log.info("Invoice :: " + new ObjectMapper().writeValueAsString(invoices));
-            invoices.forEach(invoice -> {
+            invoices.forEach(this::processInvoice);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
-                if (!cache.checkIfPresent(invoice.getTraderSystemInvoiceNumber())) { //Process only if it's not available in cache
-                    new Thread(() -> {
-                        try {
-                            // Add to cache to prevent Similar transaction from being processed while the current
-                            // of the same kind is not yet completed
-                            cache.addToCache(invoice);
+    public  void retryInvoiceProcessing(){
+        try {
+            List<TimsInvoice> invoices = db_gateway.getInvoicesForProcessingRetry();
+            log.info("Invoice for Retry :: " + new ObjectMapper().writeValueAsString(invoices));
+            invoices.forEach(this::processInvoice);
 
-                            JsonNode node = http.pushInvoice(invoice);
-                            String msg = node.has("messages") ? node.get("messages").asText() : "Failed";
-                            if (msg.toLowerCase().contains("success")) {
-                                String date = node.has("DateTime") ? node.get("DateTime").asText() : "Not Found";
-                                String invoiceNumber = node.has("mtn") ? node.get("mtn").asText() : "Not Found";
-                                String msn = node.has("msn") ? node.get("msn").asText() : "Not Found";
-                                String relevantNumber = node.has("relevantNumber") ? node.get("relevantNumber").asText() : "Not Found";
-                                String totalAmount = node.has("totalAmount") ? node.get("totalAmount").asText() : "Not Found";
-                                String totalItems = node.has("totalItems") ? node.get("totalItems").asText() : "Not Found";
-                                String verificationUrl = node.has("verificationUrl") ? node.get("verificationUrl").asText() : "Not Found";
-                                db_gateway.updateRctSummary(invoice.getTraderSystemInvoiceNumber(), "SUC", msg, date, invoiceNumber, msn, relevantNumber, totalAmount, totalItems, verificationUrl);
-                            } else if (msg.contains("timed out")) {
-                                log.warn("Timeout when posting : "+invoice.getTraderSystemInvoiceNumber());
-                            } else
-                                db_gateway.updateRctSummary(invoice.getTraderSystemInvoiceNumber(), "FAILED", node.asText().replaceAll("\'", ""), LocalDateTime.now().toString(), "", "", "", "", "", "");
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
 
-                            //Remove item form cache
-                            cache.evictFromCache(invoice);
+    }
 
-                        } catch (JsonProcessingException e) {
-                            e.printStackTrace();
-                        }
-                    }).start();
-                }
+    public void processInvoice(TimsInvoice invoice) {
+
+        try {
+
+            if (!cache.checkIfPresent(invoice.getTraderSystemInvoiceNumber())) { //Process only if it's not available in cache
+                new Thread(() -> {
+                    try {
+                        // Add to cache to prevent Similar transaction from being processed while the current
+                        // of the same kind is not yet completed
+                        cache.addToCache(invoice);
+
+                        JsonNode node = http.pushInvoice(invoice);
+                        String msg = node.has("messages") ? node.get("messages").asText() : "Failed";
+                        if (msg.toLowerCase().contains("success")) {
+                            String date = node.has("DateTime") ? node.get("DateTime").asText() : "Not Found";
+                            String invoiceNumber = node.has("mtn") ? node.get("mtn").asText() : "Not Found";
+                            String msn = node.has("msn") ? node.get("msn").asText() : "Not Found";
+                            String relevantNumber = node.has("relevantNumber") ? node.get("relevantNumber").asText() : "Not Found";
+                            String totalAmount = node.has("totalAmount") ? node.get("totalAmount").asText() : "Not Found";
+                            String totalItems = node.has("totalItems") ? node.get("totalItems").asText() : "Not Found";
+                            String verificationUrl = node.has("verificationUrl") ? node.get("verificationUrl").asText() : "Not Found";
+                            db_gateway.updateRctSummary(invoice.getTraderSystemInvoiceNumber(), "SUC", msg, date, invoiceNumber, msn, relevantNumber, totalAmount, totalItems, verificationUrl);
+                        } else if (msg.contains("timed out")) {
+                            log.warn("Timeout when posting : " + invoice.getTraderSystemInvoiceNumber());
+                        } else
+                            db_gateway.updateRctSummary(invoice.getTraderSystemInvoiceNumber(), "FAILED", node.toString().replaceAll("\'", ""), LocalDateTime.now().toString(), "", "", "", "", "", "");
+
+                        //Remove item form cache
+                        cache.evictFromCache(invoice);
+
+                    } catch (JsonProcessingException e) {
+                        e.printStackTrace();
+                    }
+                }).start();
+            }
                 /*else {
                     log.warn("Invoice Still in processing :: "+invoice.getTraderSystemInvoiceNumber());
                 }*/
 
-            });
 
         } catch (Exception e) {
             e.printStackTrace();

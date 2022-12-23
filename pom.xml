@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.tims</groupId>
     <artifactId>intergration</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0.0</version>
     <name>intergration</name>
     <description>intergration</description>
     <properties>

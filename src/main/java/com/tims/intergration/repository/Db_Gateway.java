@@ -34,6 +34,19 @@ public class Db_Gateway {
         return timsInvoices;
     }
 
+    public List<TimsInvoice> getInvoicesForProcessingRetry(){
+        List<TimsInvoice> tims = new ArrayList<>();
+        repository
+                .getReceptsForRetry()
+                .forEach(rct ->{
+                    TimsInvoice t = buildInvoice(rct);
+                    if (t.getItems().size()>0){
+                        tims.add(t);
+                    }
+                });
+        return tims;
+    }
+
     private TimsInvoice buildInvoice(Map<String, Object> receipt) {
         int rctNo = Integer.parseInt(receipt.get("RctNo").toString());
         Map<String, Object> legerInfo = repository.getLegerInfo(rctNo);

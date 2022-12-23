@@ -1,0 +1,10 @@
+#!/bin/bash
+
+APP=intergration-1.0.0
+:"${VERSION:=$APP}"
+TAG=tims:$VERSION
+DIR=target
+
+cp ../$DIR/$APP.jar $APP.jar && docker build -f tims.Dockerfile -t sam9883/$TAG . && rm -rf $APP && rm $APP.jar
+
+docker push sam9883/$TAG
