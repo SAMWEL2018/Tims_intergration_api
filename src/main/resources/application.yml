@@ -1,5 +1,6 @@
 server:
   port: ${APP_TIMS_PORT:5000}
+  shutdown: immediate
 
 spring:
   datasource:
@@ -11,6 +12,7 @@ spring:
 tims:
   base_url: ${TIMS_BASE_URL:http://197.248.125.81:8086/api/v3/}
   invoice_url: ${TIMS_INVOICE_URL:invoices}
+  app_key: ${ACTIVATION_KEY:OzOs7YM816dR1knGxQs9iiUCVRJr/jblhC6ClPmRkQ8dLnGoBHFSn1spGYg8PNCj6HIiNz2BBn/X2Z0mopTkrFlJVtU7whx2goyhavr04a9gvbhNHZtpz0TAo53CsA50E9lwhAufp3Pw+zSEDPa9KEc/Wn0SPCQBCTjrcv6GDYc=}
 
 #logging----------------------------------------------------------
 logging:

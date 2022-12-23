@@ -3,20 +3,30 @@ package com.tims.intergration.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.tims.intergration.IntergrationApplication;
+import com.tims.intergration.config.AppConfig;
 import com.tims.intergration.http.HttpComponent;
 import com.tims.intergration.model.TimsInvoice;
 import com.tims.intergration.repository.Db_Gateway;
+import com.tims.intergration.utility.Hammer;
 import com.tims.intergration.utility.InvoiceCache;
+import com.tims.intergration.utility.RSAUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.SpringApplication;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @Slf4j
 public class TimsInvoiceProcessorService {
+    @Autowired
+    private AppConfig config;
     @Autowired
     public Db_Gateway db_gateway;
 
@@ -73,5 +83,13 @@ public class TimsInvoiceProcessorService {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public boolean hammerService(){
+        LocalDateTime dateTime = LocalDateTime.parse(Objects.requireNonNull(RSAUtil.decrypt(config.getHammer(), Hammer.privateKey)), DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+        if (!dateTime.isAfter(LocalDateTime.now())){
+            return  false;
+        }
+        return true;
     }
 }
