@@ -35,12 +35,6 @@ public class ReceiptRepository {
                 "WHERE RctNo=? ";
         return jdbcTemplate.update(sql,status,inV,verUrl,msn,date,msg,rctNo);
     }
-    public  int updateCounter(String rctNo,int CuCountRequests){
-        String sql = "UPDATE FOTRN.dbo.RctTrnSummary " +
-                "SET CuCountRequests=?" + "WHERE RctNo=?";
-
-        return jdbcTemplate.update(sql,rctNo,CuCountRequests);
-    }
 
     public List<Map<String, Object>> getUnprocessedReceipts() {
 
@@ -48,16 +42,12 @@ public class ReceiptRepository {
                 " FROM RctTrnSummary where tims_status =? and CuCountRequests<?";
 
         int count = 5;
-
         List<Map<String, Object>> results = jdbcTemplate.queryForList(sql, "NEW",count);
-
-
         if (results.size() > 0) {
             List<Map<String, Object>> r = results
                     .stream()
                     .filter(this::isReceiptPaid) // Remove Receipt not paid
                     .toList();
-            System.out.println("==============> "+ r.size());
             return r;
         }
         return new ArrayList<>();
@@ -94,7 +84,7 @@ public class ReceiptRepository {
 
     public  List<Map<String,Object>>  getReceptsForRetry(){
         String sql = " SELECT RctNo, TrnDate, UserName, PreVatAmt, VatAmt, Loyalty, CustName, SalesManCode, CRC " +
-                " FROM RctTrnSummary where tims_status =? and CuCountRequests =? ";
+                " FROM RctTrnSummary where tims_status =? and CuCountRequests >=? ";
         int count = 5 ;
         List<Map<String,Object>> results = jdbcTemplate.queryForList(sql,"NEW",count);
 
@@ -108,8 +98,5 @@ public class ReceiptRepository {
         }
         return new ArrayList<>();
     }
-
-
-
 
 }

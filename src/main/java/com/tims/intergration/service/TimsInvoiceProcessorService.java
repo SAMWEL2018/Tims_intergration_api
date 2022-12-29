@@ -48,8 +48,10 @@ public class TimsInvoiceProcessorService {
     public void normalInvoiceProcessing() {
         try {
             List<TimsInvoice> invoices = db_gateway.getInvoicesForProcessing();
-            log.info("Invoice :: " + new ObjectMapper().writeValueAsString(invoices));
-            invoices.forEach(this::processInvoice);
+            if (invoices.size() >0) {
+                log.info("Invoice :: " + new ObjectMapper().writeValueAsString(invoices));
+                invoices.forEach(this::processInvoice);
+            }
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
@@ -58,8 +60,10 @@ public class TimsInvoiceProcessorService {
     public  void retryInvoiceProcessing(){
         try {
             List<TimsInvoice> invoices = db_gateway.getInvoicesForProcessingRetry();
-            log.info("Invoice for Retry :: " + new ObjectMapper().writeValueAsString(invoices));
-            invoices.forEach(this::processInvoice);
+            if (invoices.size() >0) {
+                log.info("Invoice for Retry :: " + new ObjectMapper().writeValueAsString(invoices));
+                invoices.forEach(this::processInvoice);
+            }
 
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
@@ -91,6 +95,7 @@ public class TimsInvoiceProcessorService {
                             db_gateway.updateRctSummary(invoice.getTraderSystemInvoiceNumber(), "SUC", msg, date, invoiceNumber, msn, relevantNumber, totalAmount, totalItems, verificationUrl);
                         } else if (msg.contains("timed out")) {
                             log.warn("Timeout when posting : " + invoice.getTraderSystemInvoiceNumber());
+                            db_gateway.updateRctSummary(invoice.getTraderSystemInvoiceNumber(), "NEW", msg, LocalDateTime.now().toString(), "", "", "", "", "", "");
                         } else
                             db_gateway.updateRctSummary(invoice.getTraderSystemInvoiceNumber(), "FAILED", node.toString().replaceAll("\'", ""), LocalDateTime.now().toString(), "", "", "", "", "", "");
 
