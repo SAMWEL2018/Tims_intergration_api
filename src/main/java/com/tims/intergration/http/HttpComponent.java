@@ -40,7 +40,7 @@ public class HttpComponent {
 
         } catch (Exception e) {
             log.error("Error On Posting Invoice to TIMS Invoice: "+ invoice.getTraderSystemInvoiceNumber()+" => "+ e.getMessage());
-            return new ObjectMapper().readTree("{\"messages\":\""+e.getMessage()+"\"}");
+            return new ObjectMapper().readTree("{\"messages\":\""+e.getMessage().replaceAll("\"","")+"\"}");
         }
 
 

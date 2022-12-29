@@ -37,10 +37,7 @@ public class InvoiceCache {
     }
 
     public boolean checkIfPresent(String key){
-        if (cache.getIfPresent(key) != null){
-            return true;
-        }
-        return false;
+        return cache.getIfPresent(key) != null;
     }
 
 }
