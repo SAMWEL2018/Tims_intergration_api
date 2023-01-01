@@ -1,18 +1,33 @@
 server:
-  port: ${APP_TIMS_PORT:8080}
+  port: ${APP_TIMS_PORT:5000}
   shutdown: immediate
 
 spring:
   datasource:
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
-    url: jdbc:sqlserver://${TIMS_DB_HOST:localhost}:${TIMS_DB_PORT:1435};databaseName=${TIMS_DB_NAME:fotrn};encrypt=true;trustServerCertificate=true;
-    username: ${TIMS_DB_USERNAME:sa}
-    password: ${TIMS_DB_PASSOWRD:test@2022}
-#    password: ${TIMS_DB_PASSOWRD:bron2020ster@2022}
+    url: jdbc:sqlserver://${TIMS_DB_HOST:192.168.8.44}:${TIMS_DB_PORT:1433};databaseName=${TIMS_DB_NAME:fotrn};encrypt=true;trustServerCertificate=true;
+    username: sa
+    password: bron2020ster
+#    hikari:
+#      validation-timeout: 50000
+
+#    dbcp2:
+#      test-while-idle: true
+#      test-on-borrow: true
+#      validation-query: SELECT 1
+#      validation-query-timeout: 10000
+#    hikari:
+#      validation-timeout: 10000
+#      maximum-pool-size: 50
+#org:
+#  hibernate:
+#    dialect: org.hibernate.dialect.SQLServer2008Dialect
+
+
 
 tims:
-  base_url: ${TIMS_BASE_URL:http://197.248.125.81:8086/api/v3/}
-#  base_url: ${TIMS_BASE_URL:http://192.168.8.33}
+  base_url: ${TIMS_BASE_URL:http://192.168.8.33:8086/api/v3/}
+
   invoice_url: ${TIMS_INVOICE_URL:invoices}
   app_key: ${ACTIVATION_KEY:biKBXvJwRiXwqPwJMbw94Pra2/g/ANMyUzMtdaQvwXLsELrNTtlQDjcCL/VFkJSs1AO7UEg+8Z1cdCzLzm+GEreWCM/oM3P01OW8Bor5PQw8ER7EzZ8zzOAWUr6z0EZQvWJlkS7cdnqzD5LG8UeywBmJN3WIC2PFZN4JEho5w84=}
 

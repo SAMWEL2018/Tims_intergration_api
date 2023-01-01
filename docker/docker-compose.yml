@@ -2,6 +2,9 @@ version: "3.2"
 services:
   tims:
     image: sam9883/tims:intergration-1.0.0
+
+
+    
     restart: unless-stopped
     ports:
       - "2000:2000"
